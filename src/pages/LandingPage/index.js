@@ -1,14 +1,23 @@
 import React, { Component } from "react";
 import { Button } from "react-materialize";
-import { Link } from "react-router-dom";
+import { Link, withRouter, Redirect } from "react-router-dom";
 import api from "../../api";
-export default class LandingPage extends Component {
+class LandingPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      url: ""
+    };
+  }
+
   handleLogin() {
     api.login().then(response => {
-      console.log(response);
+      return;
     });
   }
   render() {
+    console.log(this.props);
     return (
       <div id="landing-page">
         <div className="camera">
@@ -37,3 +46,5 @@ export default class LandingPage extends Component {
     );
   }
 }
+
+export default withRouter(LandingPage);
