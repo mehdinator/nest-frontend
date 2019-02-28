@@ -20,7 +20,7 @@ export default {
     return service
       .post("/auth/nest/callback", { code })
       .then(response => {
-        // return response;
+        Cookies.set("nest_token", response.data.token);
         console.log("RESPONSE", response);
       })
 

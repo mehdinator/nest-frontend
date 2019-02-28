@@ -24,21 +24,22 @@ class LandingPage extends Component {
     console.log("Query variable %s not found", variable);
   }
 
+  componentDidMount() {
+    let code = this.getQueryVariable("code");
+    if (this.props.location.pathname === "/auth/nest/callback") {
+      api.callback(code).then(response => {
+        this.setState({ response: response });
+      });
+    }
+  }
+
   handleLogin = () => {
     window.location = "http://localhost:4000/auth/nest";
     return null;
   };
 
   render() {
-    let code = this.getQueryVariable("code");
-
     console.log(this.props.location.pathname === "/auth/nest/callback");
-
-    if (this.props.location.pathname === "/auth/nest/callback") {
-      api.callback(code).then(response => {
-        this.setState({ response: response });
-      });
-    }
 
     if (this.state.response) {
       return <div>Loading</div>;
