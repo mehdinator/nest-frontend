@@ -1,23 +1,48 @@
 import React, { Component } from "react";
 import { Button } from "react-materialize";
-import { Link, withRouter, Redirect } from "react-router-dom";
+import { Link, withRouter, Route } from "react-router-dom";
 import api from "../../api";
+import Cookies from "js-cookie";
 class LandingPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      url: ""
+      response: null
     };
   }
 
-  handleLogin() {
-    api.login().then(response => {
-      return;
-    });
+  getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (decodeURIComponent(pair[0]) == variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    console.log("Query variable %s not found", variable);
   }
+
+  handleLogin = () => {
+    window.location = "http://localhost:4000/auth/nest";
+    return null;
+  };
+
   render() {
-    console.log(this.props);
+    let code = this.getQueryVariable("code");
+
+    console.log(this.props.location.pathname === "/auth/nest/callback");
+
+    if (this.props.location.pathname === "/auth/nest/callback") {
+      api.callback(code).then(response => {
+        this.setState({ response: response });
+      });
+    }
+
+    if (this.state.response) {
+      return <div>Loading</div>;
+    }
     return (
       <div id="landing-page">
         <div className="camera">
@@ -42,6 +67,14 @@ class LandingPage extends Component {
         <div className="alteos">
           <img src="/alteos.jpg" alt="alteos" />
         </div>
+
+        <Route
+          path="/privacy-policy"
+          component={() => {
+            window.location = "http://localhost:4000/auth/nest";
+            return null;
+          }}
+        />
       </div>
     );
   }

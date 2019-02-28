@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Cookies from "js-cookie";
 const service = axios.create({
   baseURL:
     process.env.NODE_ENV === "production" ? "/api" : "http://localhost:4000",
@@ -15,15 +15,24 @@ const errHandler = err => {
 
 export default {
   service: service,
-  login() {
+
+  callback(code) {
     return service
-      .get("/auth/nest")
+      .post("/auth/nest/callback", { code })
       .then(response => {
-        console.log(response);
+        // return response;
+        console.log("RESPONSE", response);
       })
 
       .catch(err => {
         console.log(err);
       });
+  },
+
+  isLoggedIn() {
+    if (Cookies.get("nest_token")) {
+      return true;
+    }
+    return false;
   }
 };
